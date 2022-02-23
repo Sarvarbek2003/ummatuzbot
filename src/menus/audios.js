@@ -1,7 +1,8 @@
 const { category, date, cancel } = require('../menu.js')
-const {selectAudios, update, insert, select, } = require('../util.js')
+const {selectAudios, update, insert, select, selectSet} = require('../util.js')
 
 const send = async(bot,msg) => {
+    let u = await selectSet()
     let chatId = msg.chat.id
     let text = msg.text
     let audios = await selectAudios()
@@ -44,8 +45,9 @@ const send = async(bot,msg) => {
     else if (steep[steep.length - 1] == 'juma' || steep[steep.length-1] == 'jumadate'){
         if(steep[steep.length - 1] == 'jumadate'){
             let { link, info, date, size} = audio(audios, 1, msg.text)
+            if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `${info}\n\n📆${date}-yil\n\n🎙 Жума маърузалар\n\n👉 @ummatuz`
+                caption: `📆 ${date}-yil\n🎙 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`
             })
             return
         }
@@ -61,10 +63,10 @@ const send = async(bot,msg) => {
     }
     else if(steep[steep.length - 1] == 'maruza' || steep[steep.length-1] == 'maruzadate'){
         if(steep[steep.length - 1] == 'maruzadate'){
-            let { link, info, date } = audio(audios, 2, msg.text)
-            if(!link || !info || !date) return
+            let { link, info, date, size } = audio(audios, 2, msg.text)
+            if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `${info}\n\n📆${date}-yil\n\n🎙 Қисқа маърузалар\n\n👉 @ummatuz`
+                caption:`📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${info}\n👉 @${u.telegram}`
             })
             return
         }
@@ -79,15 +81,15 @@ const send = async(bot,msg) => {
         })
     }
     else if(steep[steep.length - 1] == 'ilmiy'){
-        let { link, info, date } = audio(audios, 2, msg.text) 
-            if(!link || !info || !date) return
+        let { link, info, date, size } = audio(audios, 3, msg.text) 
+            if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `${info}\n\n📆${date}-yil\n\n🎙 Қисқа маърузалар\n\n👉 @ummatuz`
+                caption: `${info}\n\n📆${date}-yil\n\n🎙 Қисқа маърузалар\n\n👉 @${u.telegram}`
             })
     }
 }
 
-const render = (arr, cat, date) => {
+const render = (arr = [], cat, date) => {
     let array = []
     let arr1 = []
     let count = 0
@@ -105,12 +107,12 @@ const render = (arr, cat, date) => {
             }   
         }
     })
-    arr1.push({text: '🔙 Ортга'})
     array.push(arr1)
+    array.push([{text: '🔙 Ортга'}])
     return array
 }
 
-const audio = (arr, cat, title)  => {
+const audio = (arr = [], cat, title)  => {
     let obj = arr.find(el => el.category == cat && el.title == title)
     return obj || {link: undefined, info: undefined, date: undefined}
 }

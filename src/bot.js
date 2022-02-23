@@ -5,17 +5,17 @@ let token = process.env.TOKEN
 
 const bot = new TelegramBot(token, {polling: true});
 
-const {selectAudios, update, insert, select, } = require('./util.js')
+const {selectAudios, update, insert, select, selectSet, deleteAudio } = require('./util.js')
 const audiosMenu = require('./menus/audios.js')
 const videosMenu = require('./menus/videos.js')
 
 const audiosAdmin = require('./admin/audios.js')
 const adm = require('./admin/admin.js')
 
-
 const { home, date ,category, adminmenu } = require('./menu.js')
 
 bot.on('text', async(msg) => {
+    let u = await selectSet()
     let admins = (await select()).map(user => user.is_admin == true ? +user.user_id : [])
     const chatId = msg.chat.id;
     const admin = admins.includes(chatId) 
@@ -27,13 +27,13 @@ bot.on('text', async(msg) => {
         let userId = (await select()).find(user => user.user_id == chatId)
         if (!userId) await insert(chatId, ['home'])
         else update(chatId, ['home'])
-        bot.sendMessage(chatId, 'Ассалому алайкум!\n\n@ummatuz саҳифасининг расмий ботига хуш келибсиз!',{
+        bot.sendMessage(chatId, `Ассалому алайкум!\n\n@${u.telegram} саҳифасининг расмий ботига хуш келибсиз!`,{
             reply_markup: home
         })  
     }
     else if(text == '/admin' && admin){
         if (steep[steep.length - 1] != 'admin') steep = ['home','admin'], await update(chatId, steep)
-        bot.sendMessage(chatId, 'salom admin',{
+        bot.sendMessage(chatId, 'Админ панел',{
             reply_markup: adminmenu
         })
     }
@@ -51,24 +51,33 @@ bot.on('text', async(msg) => {
             audiosMenu.send(bot,msg)
         }
         else if(text == '🎥 Видео марузалар' || steep[1] == 'videomenu'){
-
+            videosMenu
         }
     }
 });
 
 bot.on('audio', async(msg) => {
     let admins = (await select()).map(user => user.is_admin == true ? +user.user_id : [])
-
+    console.log(msg)
     const chatId = msg.chat.id;
     const admin = admins.includes(chatId) 
 
     let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
 
     if(steep[steep.length - 1] == 'sendAudio' && admin){
-        audiosAdmin(bot, msg)
+        audiosAdmin.juma(bot, msg)
+    }
+    else if(steep[steep.length - 1] == 'sendMaruza' && admin){
+        audiosAdmin.maruza(bot,msg)
     }
 })
 
+bot.on('callback_query', async(msg) =>{
+    if(msg.data == 'del'){
+        await deleteAudio(msg.message.audio.file_unique_id)
+        bot.deleteMessage(msg.from.id,msg.message.message_id)
+    }
+})
 
 const menu = (steep,chatId) => {
     if (steep == 'juma'){

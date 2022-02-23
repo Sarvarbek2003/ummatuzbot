@@ -1,19 +1,20 @@
 CREATE DATABASE ummatuz;
 
 CREATE TABLE audios (
-    audio_id int generated always as identity,
-    title character varying(50) not null,
+    audio_id character varying(100) null,
+    title character varying(100) not null,
     info character varying(100) not null,
     link character varying(100) not null, 
     date character varying(4) not null, 
     size float null, 
     category smallint not null
 );
+
 CREATE TABLE videos (
-    video_id int generated always as identity,
+    video_id character varying(100) null,
     title character varying(50) not null,
     info character varying(100) not null,
-    link character varying(100) not null, 
+    link character varying(100) not null,   
     date character varying(4) not null, 
     size float null, 
     category smallint not null
@@ -25,8 +26,17 @@ CREATE TABLE users (
     is_admin boolean default false
 );
 
+CREATE TABLE settings (
+    telegram character varying(50) null,
+    instagram character varying(100) null,
+    youtube character varying(100) null,
+    tiktok character varying(100) null,
+    faceBook character varying(100) null
+);
+
 update users set is_admin = true where user_id = 887528138;
 
+insert into settings (telegram) values ('ummatuz')
 insert into audios (title,info,link,date,category,size) values
 ('📖Фотиҳа сураси','📖Фотиҳа сураси','https://t.me/quran_u/3','2017','1',35),
 ('📖Бақара сураси','📖Бақара сураси','https://t.me/quran_u/4','2016','1',35),

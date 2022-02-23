@@ -49,10 +49,18 @@ const adminmenu = {
     ]
 }
 
+const inline = {
+    inline_keyboard:[
+        [{text: "❌ Delete", callback_data: 'del'}]
+    ]
+}
+
 module.exports = {
     adminmenu,
     category,
     cancel,
+    inline,
+    otmen,
     home,
     date
 }
