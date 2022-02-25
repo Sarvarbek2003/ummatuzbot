@@ -1,5 +1,5 @@
 const {selectAudios, update, insert, select, } = require('../util.js')
-const { home, date ,category, adminmenu } = require('../menu.js')
+const { home, date ,category, adminmenu,updateMenu } = require('../menu.js')
 
 const audiosAdmin = require('../admin/audios.js')
 const videosAdmin = require('../admin/videos.js')
@@ -12,7 +12,7 @@ module.exports = async(bot, msg) => {
     let audios = await selectAudios()
     let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     let st = steep[steep.length - 1]
-    if(text == '🎙 Аудио маърузалар' && st == 'admin'){
+    if(text == '🎙 Аудио маърузалар'){
         if (steep[steep.length - 1] != 'adminAudio') steep.push('adminAudio'), await update(chatId, steep)
             bot.sendMessage(chatId, 'Аудио маърузалар',{
                 reply_markup: category
@@ -38,6 +38,11 @@ module.exports = async(bot, msg) => {
             })
     }
     else if(st == 'adminAudio'){
+        if((st == 'adminJuma' || st == 'adminMaruza' || 'adminAudio') && text == '🔙 Ортга'){
+            steep.splice(steep.length-1, 1)
+            await menu(bot,steep,chatId)
+            await update(chatId, steep)
+        }
         if (text == '🕋 Жума маърузалар'){
             if (steep[steep.length - 1] != 'adminJuma') steep.push('adminJuma'), await update(chatId, steep)
             bot.sendMessage(chatId, 'Жума маърузалар',{
@@ -51,9 +56,9 @@ module.exports = async(bot, msg) => {
             })
         }
         else if(text == '📖 Илмий суҳбат'){
-            if (steep[steep.length - 1] != 'adminIlmiy') steep.push('adminIlmiy'), await update(chatId, steep)
+            if (steep[steep.length - 1] != 'sendIlmiy') steep.push('sendIlmiy'), await update(chatId, steep)
             let categ = render(audios,3)
-            bot.sendMessage(chatId, 'Қисқа маърузалар',{
+            bot.sendMessage(chatId, 'Илмий суҳбат аудио юборинг',{
                 reply_markup: {
                     resize_keyboard:true,
                     keyboard: categ
@@ -62,17 +67,14 @@ module.exports = async(bot, msg) => {
         }
         else if(text == '🗂 Фойдали дарслар'){
             if (steep[steep.length - 1] != 'adminFoydali') steep.push('adminFoydali'), await update(chatId, steep)
-            bot.sendMessage(chatId, 'Қисқа маърузалар',{
-                reply_markup: {
-                    resize_keyboard: true,
-                    keyboard: categ
-                }
+            bot.sendMessage(chatId, 'Фойдали дарсларни қўшиш учун плайлист линкини юборинг',{
+                reply_markup: updateMenu
             })
         }
     }
-    else if((st == 'adminJuma' || st == 'adminMaruza') && text == '🔙 Ортга'){
+    else if((st == 'adminJuma' || st == 'adminMaruza' || st == 'sendFoydali' || st == 'adminFoydali') && text == '🔙 Ортга'){
         steep.splice(steep.length-1, 1)
-        menu(bot,steep,chatId)
+        await menu(bot,steep,chatId)
         await update(chatId, steep)
     }
     else if(st == 'adminJuma' || steep[4] == 'sendAudio'){
@@ -83,18 +85,25 @@ module.exports = async(bot, msg) => {
         if (!steep.includes('sendMaruza')) steep.push('sendMaruza'), await update(chatId, steep), year = msg.text
         audiosAdmin.maruza(bot,msg,year)
     }
-    else if(st == 'adminIlmiy' || steep[4] == 'sendIlmiy'){
-        if (!steep.includes('sendIlmiy')) steep.push('sendIlmiy'), await update(chatId, steep), year = msg.text
-        audiosAdmin.ilmiy(bot,msg,year)
+    else if(st == 'sendIlmiy' || steep[4] == 'sendTitle'){
+        if (!steep.includes('sendIlmiy')) steep.push('sendIlmiy'), await update(chatId, steep)
+        audiosAdmin.ilmiy(bot,msg)
     }
     else if(st == 'adminFoydali' || steep[4] == 'sendFoydali'){
-        if (!steep.includes('sendFoydali')) steep.push('sendFoydali'), await update(chatId, steep), year = msg.text
-        audiosAdmin.maruza(bot,msg,year)
+        if(
+            !(text.startsWith('https://www.youtube.com/watch?v=') && text.split('=')[2]) &&  
+            !(text.startsWith('https://youtube.com/playlist?list=') && text.split('=')[1]) 
+        ){
+            if(text != "♻️ Янгилаш") return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
+        }  
+
+        // if (!steep.includes('sendFoydali')) steep.push('sendFoydali'), await update(chatId, steep)
+        audiosAdmin.foydali(bot,msg)
     }
 }
     
 const menu = (bot,steep,chatId) => {
-    if(['adminIlmiy','adminFoydali','adminAudio','sendMaruza'].includes(steep[steep.length - 1])){
+    if(['adminIlmiy','adminAudio','sendMaruza'].includes(steep[steep.length - 1])){
         bot.sendMessage(chatId, 'Аудио маърузалар',{
             reply_markup:category
         })

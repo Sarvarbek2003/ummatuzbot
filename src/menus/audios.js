@@ -1,5 +1,5 @@
-const { category, date, cancel } = require('../menu.js')
-const {selectAudios, update, insert, select, selectSet} = require('../util.js')
+const { category, date, cancel} = require('../menu.js')
+const {selectAudios,selectVideos, update, yutubeApi, select, selectSet} = require('../util.js')
 
 const send = async(bot,msg) => {
     let u = await selectSet()
@@ -13,7 +13,7 @@ const send = async(bot,msg) => {
             reply_markup: category
         })
     }
-    else if(steep[steep.length - 1] == 'audiomenu'){
+    else if(steep[steep.length - 1] == 'audiomenu' || steep[steep.length - 1] == 'foydali'){
         if (text == '🕋 Жума маърузалар'){
             if (steep[steep.length - 1] != 'juma') steep.push('juma'), await update(chatId, steep)
             bot.sendMessage(chatId, 'Жума маърузалар, йилни танланг 👇', {
@@ -31,14 +31,18 @@ const send = async(bot,msg) => {
             bot.sendMessage(chatId, '📖 Илмий суҳбат', {
                 reply_markup:{
                     resize_keyboard: true,
-                    keyboard: render(audios, 3, msg.text) || [{text: '🔙 Ортга'}]
+                    keyboard: render(audios, 3) || [{text: '🔙 Ортга'}]
                 }
             })
         }
         else if(text == '🗂 Фойдали дарслар'){
             if (steep[steep.length - 1] != 'foydali') steep.push('foydali'), await update(chatId, steep)
-            bot.sendMessage(chatId, '🗂 Фойдали дарслар', {
-                reply_markup: cancel
+            let {txt,array} = await rend(1,4, msg)
+            bot.sendMessage(chatId, txt,{
+                parse_mode: 'HTML',
+                reply_markup: {
+                    inline_keyboard: array
+                }
             })
         }
     }
@@ -84,17 +88,17 @@ const send = async(bot,msg) => {
         let { link, info, date, size } = audio(audios, 3, msg.text) 
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `${info}\n\n📆${date}-yil\n\n🎙 Қисқа маърузалар\n\n👉 @${u.telegram}`
+                caption: `📆 ${date}-yil\n📖 Илмий суҳбатлар\n💽 ${size}MB\n\n${info}\n👉 @${u.telegram}`
             })
     }
 }
 
-const render = (arr = [], cat, date) => {
+const render = (arr = [], cat, date = "2022") => {
     let array = []
     let arr1 = []
     let count = 0
     arr.map((el) => {
-        if (el.date == date && el.category == cat){
+        if (el.date == (date || true) && el.category == cat){
             let obj = {text: el.title}
             if(count < 2){
                 arr1.push(obj)
@@ -110,6 +114,70 @@ const render = (arr = [], cat, date) => {
     array.push(arr1)
     array.push([{text: '🔙 Ортга'}])
     return array
+}
+
+// const rends = async(page = 1,category) => {
+//     if(page < 1) return 'error'
+//     let res = await selectVideos(category)
+//     if (res.length == 0) return {txt: "Хозирча контент йўқ", array: [[{text: "❎", callback_data: 'no'}]]}
+//     if(page > Math.ceil(res.length/10)) return 'error1'
+//     let limit = 10
+//     let videos = res.slice(page * limit - limit, limit * page)
+//     let count = 0  
+//     let array = []
+//     let arr = []
+//     let txt = `<b>Натижалар ${page*10} / ${res.length}</b>\n\n`  
+//     videos.map((el,index) => {
+//         txt+=`<b>${index + 1}</b>). ` + el.title + ' | ' + el.time_length + '\n➖➖➖➖➖➖➖➖➖\n'
+//         if(count < 5){
+//             arr.push({text: index+1, callback_data: el.video_id})
+//             count++
+//         }else{
+//             array.push(arr)
+//             arr = []
+//             count = 1
+//             arr.push({text: index+1, callback_data: el.video_id})
+//         }
+//     })
+//     array.push(arr)
+//     array.push([{text: "⬅️", callback_data: 'prev'},{text: `${page} / ${Math.ceil(res.length/10)}`, callback_data: 'page'},{text: "➡️", callback_data: 'next'}])
+//     return {txt , array}
+// }
+
+const rend = async(page = 1,category,msg) => {
+    let steep = (await select()).find(user => user.user_id == msg.from.id)?.steep.split(' ')
+    if(page < 1) return 'error'
+    let res = await selectVideos(category)
+    if (res.length == 0) return {txt: "Хозирча контент йўқ", array: [[{text: "❎", callback_data: 'no'}]]}
+    if(page > Math.ceil(res.length/10)){
+        steep.splice(-1, 1)
+        await update(msg.from.id, steep)
+        return bot.answerCallbackQuery(msg.id,{text: "Бу охирги саҳифа"})
+    } 
+    let limit = 10
+    let videos = res.slice(page * limit - limit, limit * page)
+    let count = 0  
+    let array = []
+    let arr = [] 
+    let txt1 = ''
+    videos.map((el,index) => {
+        txt1+=`<b>${index + 1}</b>). ` + el.title + ' | ' + el.time_length + '\n➖➖➖➖➖➖➖➖➖\n'
+        if(count < 5){
+            arr.push({text: index+1, callback_data: el.video_id})
+            count++
+        }else{
+            array.push(arr)  
+            arr = []
+            count = 1
+            arr.push({text: index+1, callback_data: el.video_id})
+        }
+    })
+    array.push(arr)
+    let leng = array[0].length || array[1]?.length ? array[0].length+array[1]?.length : 9
+    let txt = `<b>Натижалар ${leng == 10 ? leng * page : res.length} / ${res.length}</b>\n\n`
+    txt+=txt1 
+    array.push([{text: "⬅️", callback_data: 'prev'},{text: `${page} / ${Math.ceil(res.length/10)}`, callback_data: 'page'},{text: "➡️", callback_data: 'next'}])
+    return {txt , array}
 }
 
 const audio = (arr = [], cat, title)  => {

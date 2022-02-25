@@ -1,5 +1,5 @@
-const { cancel, inline , date} = require('../menu.js')
-const { selectAudios, update, select, insertAudio,selectSet } = require('../util.js')
+const { cancel, inline , date, category} = require('../menu.js')
+const { playlist,yutubeApi, selectAudios, update, select, selectPlaylist, insertAudio,selectSet } = require('../util.js')
 
 let link = ''
 let uid = ''
@@ -21,7 +21,7 @@ const juma = async(bot, msg, year) => {
 
     if(text == '🔙 Ортга' && steep[1] == 'admin'){
         steep.splice(steep.length-1, 1)
-        menu(bot,steep,chatId)
+        await menu(bot,steep,chatId)
         await update(chatId, steep)
     } 
     else if (st == 'sendAudio' && msg.audio){
@@ -63,7 +63,7 @@ const juma = async(bot, msg, year) => {
         let { link, info, date, size} = audio(audios, 1, msg.text)
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n🎙 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`,
+                caption: `📆 ${date}-yil\n🕋 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`,
                 reply_markup : inline
             })
     }
@@ -81,11 +81,17 @@ const maruza = async(bot, msg, year) => {
     const chatId = msg.chat.id;
     const text = msg.text
 
+    let u = await selectSet()
+
+    let audios = await selectAudios()
+    let aud = ren(audios,2,year)
+
     let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     let st = steep[steep.length - 1]
+
     if(text == '🔙 Ортга' && steep[1] == 'admin'){
         steep.splice(steep.length-1, 1)
-        menu(bot,steep,chatId)
+        await menu(bot,steep,chatId)
         await update(chatId, steep)
     } 
     else if (st == 'sendMaruza' && msg.audio){
@@ -96,6 +102,7 @@ const maruza = async(bot, msg, year) => {
             }
         })
         if (steep[steep.length - 1] != 'sendTitle') steep.push('sendTitle'), await update(chatId, steep)
+        uid = msg.audio.file_unique_id
         link = msg.audio.file_id
         size = (msg.audio.file_size / 1024 / 1024).toFixed(2)
     }
@@ -111,7 +118,7 @@ const maruza = async(bot, msg, year) => {
     }
     else if(st == 'sendInfo'){
         info = '🔖' + text
-        await insertAudio(year, link, size, title, info,2)
+        await insertAudio(uid,year, link, size, title, info,2)
         bot.sendMessage(chatId,'✅Мувоффақятли жойланди\n\n🔄Ушбу йил учун яна аудио жойламоқчи бўлсангиз аудио юборинг!',{
             reply_markup:{
                 resize_keyboard: true,
@@ -122,26 +129,42 @@ const maruza = async(bot, msg, year) => {
         steep.splice(index - 1)
         await update(chatId, steep)
     }
-    else bot.sendMessage(chatId,"Марҳамат аудио юборинг",{
-        reply_markup:{
+    else if(aud.includes(text)){
+        let { link, info, date, size} = audio(audios, 2, msg.text)
+            if(!link || !info || !date || !size) return
+            bot.sendAudio(chatId, link,{
+                caption: `📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`,
+                reply_markup : inline
+            })
+    }
+    else {
+        bot.sendMessage(chatId,"Марҳамат аудио юборинг",{
+            reply_markup:{
                 resize_keyboard: true,
                 keyboard: render(audios, 2, msg.text) || [{text: '🔙 Ортга'}]
             }
-    })
+        })
+    }
 }
 
-const ilmiy = async(bot, msg, year) => {
+const ilmiy = async(bot, msg, year = '2022') => {
     const chatId = msg.chat.id;
     const text = msg.text
 
+    let u = await selectSet()
+
+    let audios = await selectAudios()
+    let aud = ren(audios,3)
+
     let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     let st = steep[steep.length - 1]
+
     if(text == '🔙 Ортга' && steep[1] == 'admin'){
         steep.splice(steep.length-1, 1)
-        menu(bot,steep,chatId)
+        await menu(bot,steep,chatId)
         await update(chatId, steep)
     } 
-    else if (st == 'adminIlmiy' && msg.audio){
+    else if (st == 'sendIlmiy' && msg.audio){
         bot.sendMessage(chatId, "Мавзуни ёзинг",{
             reply_markup:{
                 resize_keyboard: true,
@@ -149,6 +172,7 @@ const ilmiy = async(bot, msg, year) => {
             }
         })
         if (steep[steep.length - 1] != 'sendTitle') steep.push('sendTitle'), await update(chatId, steep)
+        uid = msg.audio.file_unique_id
         link = msg.audio.file_id
         size = (msg.audio.file_size / 1024 / 1024).toFixed(2)
     }
@@ -164,7 +188,7 @@ const ilmiy = async(bot, msg, year) => {
     }
     else if(st == 'sendInfo'){
         info = '🔖' + text
-        await insertAudio(year, link, size, title, info,3)
+        await insertAudio(uid,year, link, size, title, info,3)
         bot.sendMessage(chatId,'✅Мувоффақятли жойланди\n\n🔄Ушбу йил учун яна аудио жойламоқчи бўлсангиз аудио юборинг!',{
             reply_markup:{
                 resize_keyboard: true,
@@ -175,13 +199,46 @@ const ilmiy = async(bot, msg, year) => {
         steep.splice(index - 1)
         await update(chatId, steep)
     }
-    else bot.sendMessage(chatId,"Марҳамат аудио юборинг",{
-        reply_markup:{
-            resize_keyboard: true,
-            keyboard: render(audios, 3, msg.text) || [{text: '🔙 Ортга'}]
-        }
+    else if(aud.includes(text)){
+        let { link, info, date, size} = audio(audios, 3, msg.text)
+            if(!link || !info || !date || !size) return
+            bot.sendAudio(chatId, link,{
+                caption: `📆 ${date}-yil\n📖 Илмий суҳбат\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`,
+                reply_markup : inline
+            })
+    }
+    else {
+        bot.sendMessage(chatId,"Марҳамат аудио юборинг",{
+            reply_markup:{
+                resize_keyboard: true,
+                keyboard: render(audios, 3, msg.text) || [{text: '🔙 Ортга'}]
+            }
+        })
+    }
+}
+
+const foydali = async(bot, msg) => {
+    const chatId = msg.chat.id;
+    const text = msg.text
+    let playList
+
+    if(text == "♻️ Янгилаш") {
+        playList =  await selectPlaylist('4') 
+    }
+    else {
+        playList = text.split('=')[text.split('=').length-1]
+    }
+    
+    if(playList == '' || playList == undefined) return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
+    
+    await yutubeApi(playList)
+    await playlist('4',playList)
+
+    bot.sendMessage(chatId, "✅ Бажарилди",{
+        reply_markup:category
     })
 }
+
 
 const menu = (bot,steep,chatId) => {
     if(steep[steep.length - 1] == 'sendTitle'){
@@ -204,9 +261,14 @@ const menu = (bot,steep,chatId) => {
             reply_markup:date
         })
     }
+    else if(steep[steep.length - 1] == 'adminAudio'){
+        bot.sendMessage(chatId,'Audo',{
+            reply_markup:category
+        })
+    }
 }
 
-const ren = (arr, cat, date) => {
+const ren = (arr, cat, date = '2022') => {
     let array = []
     arr.map(el => {
         if (el.date == date && el.category == cat){
@@ -245,6 +307,7 @@ const audio = (arr, cat, title)  => {
 }
 
 module.exports = {
+    foydali,
     maruza,
     ilmiy,
     juma

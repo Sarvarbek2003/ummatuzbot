@@ -1,4 +1,5 @@
 const pg = require('pg')
+const ytfps = require('ytfps')
 
 const pool = new pg.Pool({
     host: 'localhost',
@@ -8,7 +9,7 @@ const pool = new pg.Pool({
     database: 'ummatuz'
 })
 
-module.exports =  async(query, ...params) => {
+const data =  async(query, ...params) => {
     
         const client = await pool.connect()
         try {
@@ -19,4 +20,14 @@ module.exports =  async(query, ...params) => {
         } finally {
             client.release()
         }
+}
+
+const api = async(play_list) => {
+    let res = await ytfps(play_list)
+    return res
+}
+
+module.exports = {
+    data,
+    api
 }

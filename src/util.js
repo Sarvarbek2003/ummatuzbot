@@ -1,4 +1,4 @@
-const data = require('./middleweares/model.js')
+const {data,api} = require('./middleweares/model.js')
 
 const insert = async(userId, array) => {
     let steep = array.join(' ')
@@ -47,6 +47,21 @@ const selectAudios = async() => {
     return audios 
 }
 
+const selectVideos = async(category) => {
+    const videos = await data(`
+        select 
+            p.category,
+            v.title,
+            v.time_length,
+            v.video_id,
+            v.imgUrl
+        from videos as v
+        left join playList as p on p.play_list = v.play_list
+        where p.category = $1
+    `,category)
+    return videos 
+}
+
 const deleteAudio = async(uid) => {
     await data(`
         DELETE FROM audios
@@ -55,11 +70,48 @@ const deleteAudio = async(uid) => {
 
 }
 
+const selectPlaylist = async(category) =>{
+    await data(`
+        select 
+            *
+        from playList
+        where category = $1;
+    `,category)
+}
+
+const playlist = async(category,playlist) => {
+    await data(`
+        delete from playList
+        where category = $2
+    `,playlist,category)
+    await data(`
+        insert into playList(category,play_list) values ($1, $2)
+    `,category,playlist)
+}
+
+const yutubeApi = async(playlist) => {
+    let videos = await api(playlist)
+    await data(`
+        delete from videos
+        where play_list = $1
+    `,playlist)
+    videos.videos.map(async(el) => {
+        await data(`
+            insert into videos(video_id, title, imgUrl,play_list,time_length) values ($1, $2, $3, $4, $5)
+        `,el.id, el.title, el.thumbnail_url,videos.id, el.length)
+    })
+    return videos
+}
+
 module.exports = {
+    selectPlaylist,
     selectAudios,
+    selectVideos,
     insertAudio,
     deleteAudio,
+    yutubeApi,
     selectSet,
+    playlist,
     update,
     insert,
     select

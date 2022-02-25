@@ -1,5 +1,3 @@
-
-
 module.exports = (bot, msg) => {
     
 }
