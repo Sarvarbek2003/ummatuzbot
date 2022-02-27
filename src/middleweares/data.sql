@@ -46,7 +46,7 @@ select
 from videos as v
 left join playList as p on p.play_list = v.play_list;
 
-update users set is_admin = true where user_id = 280034232;
+update users set is_admin = true where user_id = 887528138;
 
 select 
     *
@@ -56,6 +56,7 @@ where category = '4';
 delete playlist 
 where 
 
+-- 280034232
 insert into settings (telegram) values ('ummatuz')
 insert into playlist (play_list, category) values ('PLbTAPHpLxwZWPMNau7B6NT-PmOnWtGHiG','4')
 insert into audios (title,info,link,date,category,size) values
