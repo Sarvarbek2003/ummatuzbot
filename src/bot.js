@@ -75,7 +75,7 @@ bot.on('audio', async(msg) => {
     const chatId = msg.chat.id;
     const admin = admins.includes(chatId) 
 
-    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
 
     if(steep[steep.length - 1] == 'sendAudio' && admin){
         audiosAdmin.juma(bot, msg)
@@ -96,7 +96,7 @@ let idd = ''
 bot.on('callback_query', async(msg) =>{
     let chatId = msg.from.id
     let data = msg.data
-    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
     let st = steep[steep.length-1]
     if(data == 'del'){
         await deleteAudio(msg.message.audio.file_unique_id)
