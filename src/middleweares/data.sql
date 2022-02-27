@@ -46,7 +46,7 @@ select
 from videos as v
 left join playList as p on p.play_list = v.play_list;
 
-update users set is_admin = true where user_id = 887528138;
+update users set is_admin = true where user_id = 280034232;
 
 select 
     *

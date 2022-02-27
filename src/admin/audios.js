@@ -1,5 +1,5 @@
 const { cancel, inline , date, category} = require('../menu.js')
-const { playlist,yutubeApi, selectAudios, update, select, selectPlaylist, insertAudio,selectSet } = require('../util.js')
+const { playlist,yutubeApi, selectAudios, deletePlaylist, update, select, selectPlaylist, insertAudio,selectSet } = require('../util.js')
 
 let link = ''
 let uid = ''
@@ -219,26 +219,37 @@ const ilmiy = async(bot, msg, year = '2022') => {
 
 const foydali = async(bot, msg) => {
     const chatId = msg.chat.id;
-    const text = msg.text
-    let playList
+    try {
+        const text = msg.text
+        let playList
 
-    if(text == "♻️ Янгилаш") {
-        playList =  await selectPlaylist('4') 
-    }
-    else {
-        playList = text.split('=')[text.split('=').length-1]
-    }
-    
-    if(playList == '' || playList == undefined) return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
-    
-    await yutubeApi(playList)
-    await playlist('4',playList)
+        let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
 
-    bot.sendMessage(chatId, "✅ Бажарилди",{
-        reply_markup:category
-    })
+        if(text == "♻️ Янгилаш") {
+            playList =  await selectPlaylist('4')
+        }
+        else if(text == "❌ Ўчириш"){
+            await deletePlaylist('4')
+            return bot.sendMessage(chatId, "❎ Ўчирилди")
+        }
+        else {
+            playList = text.split('=')[text.split('=').length-1]
+        }
+        if(playList == '' || playList == undefined) return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
+
+        await yutubeApi(playList)
+        await playlist('4',playList)
+
+        steep.pop()
+        await update(chatId, steep)
+        
+        bot.sendMessage(chatId, "✅ Бажарилди",{
+            reply_markup:category
+        })
+    }catch (err){
+        bot.sendMessage(chatId,'Хатолик қайта уруниб кўринг')
+    }
 }
-
 
 const menu = (bot,steep,chatId) => {
     if(steep[steep.length - 1] == 'sendTitle'){

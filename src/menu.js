@@ -17,6 +17,15 @@ const category = {
     ]
 }
 
+const videocategory = {
+    resize_keyboard: true,
+    keyboard:[
+        [{text: "🕋 Жума маърузалар"},{text: "🎙 Қисқа маърузалар"}],
+        [{text: "📖 Илмий суҳбат"},{text: "⁉️ Савол-жавоблар"}],
+        [{text: "🔙 Ортга"}]
+    ]
+}
+
 const cancel = {
     resize_keyboard: true,
     keyboard:[
@@ -28,6 +37,7 @@ const updateMenu = {
     resize_keyboard: true,
     keyboard:[
         [{text: "♻️ Янгилаш"}],
+        [{text: "❌ Ўчириш"}],
         [{text: "🔙 Ортга"}]
     ]
 }
@@ -65,6 +75,7 @@ const videosInline = {
 }
 
 module.exports = {
+    videocategory,
     videosInline,
     updateMenu,
     adminmenu,

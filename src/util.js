@@ -62,6 +62,16 @@ const selectVideos = async(category) => {
     return videos 
 }
 
+const  viweVideos = async(id) => {
+    let video = await data(`
+        select 
+            *
+        from videos
+        where video_id = $1;
+    `,id)
+    return video
+}
+
 const deleteAudio = async(uid) => {
     await data(`
         DELETE FROM audios
@@ -70,20 +80,41 @@ const deleteAudio = async(uid) => {
 
 }
 
+const deletePlaylist = async(category) => {
+    let pId = await data(`
+        select 
+            play_list 
+        from playList
+        where category = $1
+    `,category)
+    if(pId[0].play_list){
+        let id = pId[0].play_list
+        await data(`
+            DELETE FROM videos
+            WHERE play_list = $1
+        `,id)
+        await data(`
+            DELETE FROM playList
+            WHERE category = $1
+        `,category)
+    }
+}
+
 const selectPlaylist = async(category) =>{
-    await data(`
+    let pId = await data(`
         select 
             *
         from playList
         where category = $1;
     `,category)
+    return pId[0]?.play_list
 }
 
 const playlist = async(category,playlist) => {
     await data(`
         delete from playList
-        where category = $2
-    `,playlist,category)
+        where category = $1
+    `,category)
     await data(`
         insert into playList(category,play_list) values ($1, $2)
     `,category,playlist)
@@ -104,13 +135,15 @@ const yutubeApi = async(playlist) => {
 }
 
 module.exports = {
+    deletePlaylist,
     selectPlaylist,
     selectAudios,
     selectVideos,
     insertAudio,
     deleteAudio,
-    yutubeApi,
+    viweVideos,
     selectSet,
+    yutubeApi,
     playlist,
     update,
     insert,

@@ -11,8 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.0",
     "dotenv": "^16.0.0",
     "node-telegram-bot-api": "^0.56.0",
+    "nodetube": "^0.5.1",
     "pg": "^8.7.3",
     "ytfps": "^1.0.5"
   }

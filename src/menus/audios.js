@@ -1,5 +1,5 @@
 const { category, date, cancel} = require('../menu.js')
-const {selectAudios,selectVideos, update, yutubeApi, select, selectSet} = require('../util.js')
+const {selectAudios,selectVideos, update, select, selectSet} = require('../util.js')
 
 const send = async(bot,msg) => {
     let u = await selectSet()
