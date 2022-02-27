@@ -440,7 +440,7 @@ const menu = (steep,chatId) => {
 }
 
 const rend = async(page = 1,category,msg) => {
-    let steep = (await select()).find(user => user.user_id == msg.from.id)?.steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == msg.from.id).steep.split(' ')
     if(page < 1) return 'error'
     let res = await selectVideos(category)
     if (res.length == 0) return {txt: "Хозирча контент йўқ", array: [[{text: "❎", callback_data: 'no'}]]}
