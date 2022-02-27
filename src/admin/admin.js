@@ -10,7 +10,7 @@ module.exports = async(bot, msg) => {
     let chatId = msg.chat.id
     let text = msg.text
     let audios = await selectAudios()
-    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
     let st = steep[steep.length - 1]
     if(text == '🎙 Аудио маърузалар'){
         if (steep[steep.length - 1] != 'adminAudio') steep.push('adminAudio'), await update(chatId, steep)

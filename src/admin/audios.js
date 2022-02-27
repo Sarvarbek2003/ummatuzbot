@@ -16,7 +16,7 @@ const juma = async(bot, msg, year) => {
     let audios = await selectAudios()
     let aud = ren(audios,1,year)
 
-    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
     let st = steep[steep.length - 1]
 
     if(text == '🔙 Ортга' && steep[1] == 'admin'){
@@ -86,7 +86,7 @@ const maruza = async(bot, msg, year) => {
     let audios = await selectAudios()
     let aud = ren(audios,2,year)
 
-    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
     let st = steep[steep.length - 1]
 
     if(text == '🔙 Ортга' && steep[1] == 'admin'){
@@ -156,7 +156,7 @@ const ilmiy = async(bot, msg, year = '2022') => {
     let audios = await selectAudios()
     let aud = ren(audios,3)
 
-    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
     let st = steep[steep.length - 1]
 
     if(text == '🔙 Ортга' && steep[1] == 'admin'){
@@ -223,7 +223,7 @@ const foydali = async(bot, msg) => {
         const text = msg.text
         let playList
 
-        let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+        let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
 
         if(text == "♻️ Янгилаш") {
             playList =  await selectPlaylist('4')

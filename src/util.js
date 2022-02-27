@@ -107,7 +107,8 @@ const selectPlaylist = async(category) =>{
         from playList
         where category = $1;
     `,category)
-    return pId[0]?.play_list
+    if(!pId[0]) return
+    return pId[0].play_list
 }
 
 const playlist = async(category,playlist) => {
