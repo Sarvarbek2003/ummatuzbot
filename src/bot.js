@@ -24,7 +24,7 @@ bot.on('text', async(msg) => {
     const admin = admins.includes(chatId) 
     const text = msg.text
 
-    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
     if(steep && steep[2] == 'foydali') steep.splice(2), await update(chatId,steep)
 
     if(text == '/start'){
