@@ -2,11 +2,11 @@ const pg = require('pg')
 const ytfps = require('ytfps')
 
 const pool = new pg.Pool({
-    host: 'localhost',
+    host: 'john.db.elephantsql.com',
     port:5432,
-    user: 'postgres',
-    password: '2003',
-    database: 'ummatuz'
+    user: 'tgyuzuha',
+    password: '4flJWBE8RhabT51dWxq3BqUmjD4Hj-SK',
+    database: 'tgyuzuha'
 })
 
 const data =  async(query, ...params) => {
