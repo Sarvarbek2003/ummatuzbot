@@ -21,7 +21,7 @@ module.exports = async(bot, msg) => {
     else if(text == '🎥 Видео маърузалар' && st == 'admin'){
         if (steep[steep.length - 1] != 'adminVideo') steep.push('adminVideo'), await update(chatId, steep)
         bot.sendMessage(chatId, 'Видео маърузалар',{
-                reply_markup: category
+                reply_markup: videocategory
             })
         
     }
