@@ -87,12 +87,10 @@ bot.on('audio', async(msg) => {
         audiosAdmin.ilmiy(bot,msg)
     }
 })
-bot.on('video', async(msg) => {
-    let url = 'https://redirector.googlevideo.com/videoplayback?expire=1645813662&ei=PssYYo_GNoWC-gakrK-YDQ&ip=168.119.239.75&id=o-ALWsGYiAqCoqmtCICW1oi1B2mouuVy7UX4PR12JHLMKS&itag=18&source=youtube&requiressl=yes&mh=zs&mm=31%2C26&mn=sn-4g5lzner%2Csn-f5f7lnel&ms=au%2Conr&mv=m&mvi=4&pl=25&initcwndbps=576250&vprv=1&mime=video%2Fmp4&gir=yes&clen=61403213&ratebypass=yes&dur=1409.195&lmt=1645764108287575&mt=1645791649&fvip=4&fexp=24001373%2C24007246&c=ANDROID&txp=5310224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRQIgLmfJ50bmQvi0dkXCvAaJkbZTLo6tyEik1jeC1LxosC0CIQD8wr8RBr5uFdDQFDgKTAum8kwaDitgXq6QgEi7FCXNoQ%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIge7nOFDzs03dtKBcv2dzltYeWPV5xmOHEyjL-S79w9kgCIGJi41ClFKStY_WNGZVSa-Q89Wh0Yta9RffR_r0SnDbT&utmg=ytap1_6gwvzV93xio'
-    let chatId = msg.from.id
-    bot.sendVideo(chatId,url)
-})
-let idd = ''
+
+
+
+
 bot.on('callback_query', async(msg) =>{
     let chatId = msg.from.id
     let data = msg.data
