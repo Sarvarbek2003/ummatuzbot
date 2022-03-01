@@ -5,7 +5,6 @@ const audiosAdmin = require('../admin/audios.js')
 const videosAdmin = require('../admin/videos.js')
 
 let year = ''
-
 module.exports = async(bot, msg) => {
     let chatId = msg.chat.id
     let text = msg.text
@@ -96,7 +95,6 @@ module.exports = async(bot, msg) => {
             if(text != "♻️ Янгилаш" && text != "❌ Ўчириш") return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
         }  
 
-        // if (!steep.includes('sendFoydali')) steep.push('sendFoydali'), await update(chatId, steep)
         audiosAdmin.foydali(bot,msg)
     }
     else if((st == 'adminVideo' || st == 'videoJuma' || st == 'videoMaruza' || st == 'videoIlmiy' || st == 'videoSavol') && text == '🔙 Ортга'){
