@@ -6,7 +6,7 @@ const send = async(bot,msg) => {
     let u = await selectSet()
     let chatId = msg.chat.id
     let text = msg.text
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     if(steep[steep.length - 1] == 'home'){
         if (steep[1] != 'videomenu') steep.push('videomenu'), await update(chatId, steep)
         bot.sendMessage(chatId, 'Видео маърузалар',{
@@ -76,7 +76,7 @@ const menu = (steep,chatId) => {
     }
 }
 const rend = async(page = 1,category,msg) => {
-    let steep = (await select()).find(user => user.user_id == msg.from.id).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == msg.from.id)?.steep.split(' ')
     if(page < 1) return 'error'
     let res = await selectVideos(category)
     if (res.length == 0) return {txt: "Хозирча контент йўқ", array: [[{text: "❎", callback_data: 'no'}]]}

@@ -16,7 +16,6 @@ const { home, date ,category, adminmenu } = require('./menu.js');
 const  axios  = require('axios')
 
 
-
 bot.on('text', async(msg) => {
     let admins = (await select()).map(user => user.is_admin == true ? +user.user_id : [])
     let u = await selectSet()
@@ -24,7 +23,7 @@ bot.on('text', async(msg) => {
     const admin = admins.includes(chatId) 
     const text = msg.text
 
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     if(steep && steep[2] == 'foydali') steep.splice(2), await update(chatId,steep)
 
     if(text == '/start'){
@@ -75,7 +74,7 @@ bot.on('audio', async(msg) => {
     const chatId = msg.chat.id;
     const admin = admins.includes(chatId) 
 
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
 
     if(steep[steep.length - 1] == 'sendAudio' && admin){
         audiosAdmin.juma(bot, msg)
@@ -94,7 +93,7 @@ bot.on('audio', async(msg) => {
 bot.on('callback_query', async(msg) =>{
     let chatId = msg.from.id
     let data = msg.data
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     let st = steep[steep.length-1]
     if(data == 'del'){
         await deleteAudio(msg.message.audio.file_unique_id)
@@ -438,7 +437,7 @@ const menu = (steep,chatId) => {
 }
 
 const rend = async(page = 1,category,msg) => {
-    let steep = (await select()).find(user => user.user_id == msg.from.id).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == msg.from.id)?.steep.split(' ')
     if(page < 1) return 'error'
     let res = await selectVideos(category)
     if (res.length == 0) return {txt: "Хозирча контент йўқ", array: [[{text: "❎", callback_data: 'no'}]]}
