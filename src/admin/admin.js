@@ -23,7 +23,6 @@ module.exports = async(bot, msg) => {
         bot.sendMessage(chatId, 'Видео маърузалар',{
                 reply_markup: videocategory
             })
-        
     }
     else if(text == '⁉️ Савол-жавоб'){
         if (steep[steep.length - 1] != 'adminJavob') steep.push('adminJavob'), await update(chatId, steep)
