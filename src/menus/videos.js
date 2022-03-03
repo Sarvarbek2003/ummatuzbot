@@ -16,13 +16,14 @@ const send = async(bot,msg) => {
     else if(text == '🔙 Ортга'){
         if (steep.length == 1) return
         let index = steep.indexOf('videomenu')
-        console.log(index)
         steep.splice(index-1)
         await update(chatId, steep)
         await menu(steep[steep.length - 1], chatId)
     }
     else if(steep[1] == 'videomenu'){
         if (text == '🕋 Жума маърузалар'){
+            let index = steep.indexOf('1')
+            if(index != -1) steep.splice(index-1), await update(chatId, steep)
             if (steep[steep.length - 1] != 'jumaVideo') steep.push('jumaVideo'), await update(chatId, steep)
             let {txt,array} = await rend(1,5, msg)
             if (!txt || !array) return
@@ -34,6 +35,8 @@ const send = async(bot,msg) => {
             })
         }
         else if(text == '🎙 Қисқа маърузалар'){
+            let index = steep.indexOf('1')
+            if(index != -1) steep.splice(index-1), await update(chatId, steep)
             if (steep[steep.length - 1] != 'maruzaVideo') steep.push('maruzaVideo'), await update(chatId, steep)
             let {txt,array} = await rend(1,6, msg)
             if (!txt || !array) return
@@ -45,6 +48,8 @@ const send = async(bot,msg) => {
             })
         }
         else if(text == '📖 Илмий суҳбат'){
+            let index = steep.indexOf('1')
+            if(index != -1) steep.splice(index-1), await update(chatId, steep)
             if (steep[steep.length - 1] != 'ilmiyVideo') steep.push('ilmiyVideo'), await update(chatId, steep)
             let {txt,array} = await rend(1,7, msg)
             if (!txt || !array) return
@@ -56,6 +61,8 @@ const send = async(bot,msg) => {
             })
         }
         else if(text == '⁉️ Савол-жавоблар'){
+            let index = steep.indexOf('1')
+            if(index != -1) steep.splice(index-1), await update(chatId, steep)
             if (steep[steep.length - 1] != 'savolJavob') steep.push('savolJavob'), await update(chatId, steep)
             let {txt,array} = await rend(1,8, msg)
             bot.sendMessage(chatId, txt,{
@@ -104,7 +111,7 @@ const rend = async(page = 1,category,msg) => {
         }
     })
     array.push(arr)
-    let leng = array[0].length || array[1].length ? array[0].length+array[1].length : 9
+    let leng = array[1] ? array[0].length+array[1].length : 9
     let txt = `<b>Натижалар ${leng == 10 ? leng * page : res.length} / ${res.length}</b>\n\n`
     txt+=txt1 
     array.push([{text: "⬅️", callback_data: 'prev'},{text: `${page} / ${Math.ceil(res.length/10)}`, callback_data: 'page'},{text: "➡️", callback_data: 'next'}])

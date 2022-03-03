@@ -6,7 +6,7 @@ const send = async(bot,msg) => {
     let chatId = msg.chat.id
     let text = msg.text
     let audios = await selectAudios()
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     if(steep[steep.length - 1] == 'home'){
         if (steep[1] != 'audiomenu') steep.push('audiomenu'), await update(chatId, steep)
         bot.sendMessage(chatId, 'Аудио маърузалар',{
@@ -51,7 +51,7 @@ const send = async(bot,msg) => {
             let { link, info, date, size} = audio(audios, 1, msg.text)
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n🎙 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`
+                caption: `📆 ${date}-yil\n🎙 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u?.telegram}`
             })
             return
         }
@@ -70,7 +70,7 @@ const send = async(bot,msg) => {
             let { link, info, date, size } = audio(audios, 2, msg.text)
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption:`📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${info}\n👉 @${u.telegram}`
+                caption:`📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${info}\n👉 @${u?.telegram}`
             })
             return
         }
@@ -145,7 +145,7 @@ const render = (arr = [], cat, date = "2022") => {
 // }
 
 const rend = async(page = 1,category,msg) => {
-    let steep = (await select()).find(user => user.user_id == msg.from.id).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == msg.from.id)?.steep.split(' ')
     if(page < 1) return 'error'
     let res = await selectVideos(category)
     if (res.length == 0) return {txt: "Хозирча контент йўқ", array: [[{text: "❎", callback_data: 'no'}]]}
@@ -173,7 +173,7 @@ const rend = async(page = 1,category,msg) => {
         }
     })
     array.push(arr)
-    let leng = array[0].length || array[1].length ? array[0].length+array[1].length : 9
+    let leng = array[1] ? array[0].length+array[1].length : 9
     let txt = `<b>Натижалар ${leng == 10 ? leng * page : res.length} / ${res.length}</b>\n\n`
     txt+=txt1 
     array.push([{text: "⬅️", callback_data: 'prev'},{text: `${page} / ${Math.ceil(res.length/10)}`, callback_data: 'page'},{text: "➡️", callback_data: 'next'}])

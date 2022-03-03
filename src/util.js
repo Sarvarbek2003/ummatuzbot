@@ -88,7 +88,7 @@ const deletePlaylist = async(category) => {
         where category = $1
     `,category)
     if(pId[0].play_list){
-        let id = pId[0].play_list
+        let id = pId[0]?.play_list
         await data(`
             DELETE FROM videos
             WHERE play_list = $1
@@ -107,8 +107,7 @@ const selectPlaylist = async(category) =>{
         from playList
         where category = $1;
     `,category)
-    if(!pId[0]) return
-    return pId[0].play_list
+    return pId[0]?.play_list
 }
 
 const playlist = async(category,playlist) => {

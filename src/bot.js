@@ -270,7 +270,7 @@ bot.on('callback_query', async(msg) =>{
         } else {
             steep.push(1,2)
             await update(chatId, steep) 
-            const {txt,array} = await rend(2,6,msg)
+            const {txt,array} = await rend(2,7,msg)
             if(!txt || !array) return
             bot.editMessageText(txt,{
                 chat_id: chatId,
@@ -382,14 +382,14 @@ bot.on('callback_query', async(msg) =>{
      else {
         try{
             let res = await viweVideos(data)
+            let a = await download(data)
+            let inline = [[{text:"📣 Youtubeda Ko'rish", url: 'https://youtu.be/' + data}]]
+            if(a) inline.push([{text:"📥 Yuklab Olish", callback_data: 'down==' + data}])
             res = res[0]
             bot.sendPhoto(chatId,res.imgurl,{
                 caption: '🎥 '+res.title + '\n\n⏰ Davomiyligi: ' + res.time_length,
                 reply_markup:{
-                    inline_keyboard:[
-                        [{text:"📣 Youtubeda Ko'rish", url: 'https://youtu.be/' + res.video_id}],
-                        [{text:"📥 Yuklab Olish", callback_data: 'down==' + res.video_id}]
-                    ]
+                    inline_keyboard:inline
                 }
         })
         }catch(err){
@@ -471,3 +471,23 @@ const rend = async(page = 1,category,msg) => {
     array.push([{text: "⬅️", callback_data: 'prev'},{text: `${page} / ${Math.ceil(res.length/10)}`, callback_data: 'page'},{text: "➡️", callback_data: 'next'}])
     return {txt , array}
 }
+
+const download = async(dat) => {
+    if(!dat) return
+    try{
+        let options = {
+            method: 'GET',
+            url: 'https://youtube-search-and-download.p.rapidapi.com/video',
+            params: {id: `${dat}`},
+            headers: {
+                'x-rapidapi-host': 'youtube-search-and-download.p.rapidapi.com',
+                'x-rapidapi-key': '22b60f92d8mshf684b6b2f066e5ep122786jsne54b4b574cfb'
+            }
+            };
+        let res = await axios.request(options)
+        let err = await bot.sendVideo('887528138', (res.data.streamingData.formats[1].url));
+        return true
+    }catch(err){
+        return false
+    }
+} 

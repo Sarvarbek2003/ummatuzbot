@@ -5,7 +5,7 @@ const juma = async(bot, msg) => {
     const chatId = msg.chat.id;
     const text = msg.text
     let playList
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     try{
         if(text == "♻️ Янгилаш") {
             playList =  await selectPlaylist('5') 
@@ -38,7 +38,7 @@ const maruza = async(bot, msg) => {
     const chatId = msg.chat.id;
     const text = msg.text
     let playList
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     try{
 
         if(text == "♻️ Янгилаш") {
@@ -70,7 +70,7 @@ const maruza = async(bot, msg) => {
 
 const ilmiy = async(bot, msg) => {
     const chatId = msg.chat.id;
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     try{
         const text = msg.text
         let playList
@@ -104,7 +104,7 @@ const ilmiy = async(bot, msg) => {
 
 const savol = async(bot, msg) => {
     const chatId = msg.chat.id;
-    let steep = (await select()).find(user => user.user_id == chatId).steep.split(' ')
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
     try{
         const text = msg.text
         let playList

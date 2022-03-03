@@ -63,7 +63,7 @@ const juma = async(bot, msg, year) => {
         let { link, info, date, size} = audio(audios, 1, msg.text)
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n🕋 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`,
+                caption: `📆 ${date}-yil\n🕋 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u?.telegram}`,
                 reply_markup : inline
             })
     }
@@ -133,7 +133,7 @@ const maruza = async(bot, msg, year) => {
         let { link, info, date, size} = audio(audios, 2, msg.text)
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`,
+                caption: `📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u?.telegram}`,
                 reply_markup : inline
             })
     }
@@ -203,7 +203,7 @@ const ilmiy = async(bot, msg, year = '2022') => {
         let { link, info, date, size} = audio(audios, 3, msg.text)
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n📖 Илмий суҳбат\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u.telegram}`,
+                caption: `📆 ${date}-yil\n📖 Илмий суҳбат\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u?.telegram}`,
                 reply_markup : inline
             })
     }
