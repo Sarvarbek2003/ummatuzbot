@@ -1,10 +1,13 @@
 const {selectAudios, update, insert, select, } = require('../util.js')
-const { videocategory, date ,category, adminmenu,updateMenu } = require('../menu.js')
+const { videocategory, date ,category, send, adminmenu,updateMenu } = require('../menu.js')
 
 const audiosAdmin = require('../admin/audios.js')
 const videosAdmin = require('../admin/videos.js')
 
 let year = ''
+let habar = ''
+let photo = ''
+let forId = 0
 module.exports = async(bot, msg) => {
     let chatId = msg.chat.id
     let text = msg.text
@@ -31,6 +34,35 @@ module.exports = async(bot, msg) => {
     }
     else if(text == '❓ Савол бериш'){
         if (steep[steep.length - 1] != 'adminSavol') steep.push('adminSavol'), await update(chatId, steep)
+            bot.sendMessage(chatId, 'Савол-жавоб',{
+                reply_markup: category
+            })
+    }
+    else if(text == '📨 Хабар юбориш'){
+        if (steep[steep.length - 1] != 'send') steep.push('send'), await update(chatId, steep)
+            bot.sendMessage(chatId, 'Қандай турдаги ҳабарни юбормоқчисиз?',{
+                reply_markup: send
+            })
+    }
+    else if(text == '📩 Форwард хабар'){
+        if (steep[steep.length - 1] != 'forsend') steep.push('forsend'), await update(chatId, steep)
+            bot.sendMessage(chatId, 'Форwард ҳабарни юборинг',{
+                reply_markup: {
+                    resize_keyboard: true,
+                    keyboard: [
+                        [{text: '🔙 Ортга'}]
+                    ]
+                }
+            })
+    }
+    else if(text == '📊 Статистика'){
+        if (steep[steep.length - 1] != 'stat') steep.push('stat'), await update(chatId, steep)
+            bot.sendMessage(chatId, 'Савол-жавоб',{
+                reply_markup: category
+            })
+    }
+    else if(text == '⚙️ Созламалар'){
+        if (steep[steep.length - 1] != 'settings') steep.push('settings'), await update(chatId, steep)
             bot.sendMessage(chatId, 'Савол-жавоб',{
                 reply_markup: category
             })
@@ -165,7 +197,105 @@ module.exports = async(bot, msg) => {
         } 
         videosAdmin.savol(bot, msg)
     }
+    else if (st == 'send' || st == 'sendText' || st == 'sendPhoto' || st == 'sendcaption'){
+        if (text == '💬 Матнли ҳабар'){
+            if (steep[steep.length - 1] != 'sendText') steep.push('sendText'), await update(chatId, steep)
+            bot.sendMessage(chatId, "Юбормоқчи бўлган ҳабарингиз матнини киритинг")
+        }
+        else if(text == '🖼 Расмли ҳабар'){
+            if (steep[steep.length - 1] != 'sendPhoto') steep.push('sendPhoto'), await update(chatId, steep)
+            bot.sendMessage(chatId, "Юбормоқчи бўлган ҳабарингизga расм юборинг")
+        }
+        else if(st == 'sendText'){
+            if(text == '✅ Тасдиқлаш'){
+                let users = await select()
+                let ok = await users.map(user => {
+                    bot.sendMessage(user.user_id, habar)
+                    return true
+                })
+                if(ok) {
+                    bot.sendMessage(chatId, 'Ҳабар '+ok.length+' та одамга юборилди',{reply_markup: adminmenu})
+                    let index = steep.indexOf('admin')
+                    steep.splice(index+1,)
+                    await update(chatId, steep)
+                }else bot.sendMessage(chatId, 'хато')
+            }
+            else {
+                bot.sendMessage(chatId, 'Юбормоқчи бўлган ҳабаринггизни тасдиқланг шу заҳоти фойдаланувчиларга юборилади',{
+                    reply_markup: {
+                        resize_keyboard: true,
+                        keyboard: [
+                            [{text: '✅ Тасдиқлаш'}]
+                        ]
+                    }
+                })
+                habar = text
+            }
+        }
+        else if(st == 'sendPhoto' || st == 'sendcaption'){
+            if(text == '✅ Тасдиқлаш'){
+                let users = await select()
+                let ok = await users.map(user => {
+                    bot.sendPhoto(user.user_id, photo,{
+                        caption: habar
+                    })
+                    return true
+                })
+                if(ok[0]) {
+                    bot.sendMessage(chatId, 'Ҳабар '+ok.length+' та одамга юборилди',{reply_markup: adminmenu})
+                    let index = steep.indexOf('admin')
+                    steep.splice(index+1,)
+                    await update(chatId, steep)
+                }else bot.sendMessage(chatId, 'хато')
+            }
+            else if (msg.photo) {
+                photo = msg.photo[0].file_id
+                if (steep[steep.length - 1] != 'sendcaption') steep.push('sendcaption'), await update(chatId, steep)
+                bot.sendMessage(chatId, 'Расмнинг тагига ёзиладиган хабар матнини киритинг')
+            }
+            else {
+                bot.sendMessage(chatId, 'Юбормоқчи бўлган ҳабаринггизни тасдиқланг шу заҳоти фойдаланувчиларга юборилади',{
+                    reply_markup: {
+                        resize_keyboard: true,
+                        keyboard: [
+                            [{text: '✅ Тасдиқлаш'}]
+                        ]
+                    }
+                })
+                habar = text
+            }
+        }
+    }
+    else if(st == 'forsend'){
+        if(text == '✅ Тасдиқлаш'){
+            let users = await select()
+            let ok = await users.map(user => {
+                bot.forwardMessage(user.user_id, chatId, forId )
+                return true
+            })
+            if(ok) {
+                bot.sendMessage(chatId, 'Ҳабар '+ok.length+' та одамга юборилди',{reply_markup: adminmenu})
+                let index = steep.indexOf('admin')
+                steep.splice(index+1,)
+                await update(chatId, steep)
+            }else bot.sendMessage(chatId, 'хато')
+        } else {
+            bot.sendMessage(chatId, 'Юбормоқчи бўлган ҳабаринггизни тасдиқланг шу заҳоти фойдаланувчиларга юборилади',{
+                reply_markup: {
+                    resize_keyboard: true,
+                    keyboard: [
+                        [{text: '✅ Тасдиқлаш'}]
+                    ]
+                }
+            })
+            forId = msg?.message_id || 0
+        }         
+    }
 }
+
+
+
+
     
 const menu = (bot,steep,chatId) => {
     if(['adminIlmiy','adminAudio','sendMaruza'].includes(steep[steep.length - 1])){

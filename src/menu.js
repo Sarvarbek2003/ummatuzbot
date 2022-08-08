@@ -33,6 +33,7 @@ const cancel = {
     ]
 }
 
+
 const updateMenu = {
     resize_keyboard: true,
     keyboard:[
@@ -47,6 +48,13 @@ const home = {
     keyboard: [
         [{text: "🎙 Аудио маърузалар"},{text:"🎥 Видео маърузалар"}],
         [{text: "⁉️ Савол-жавоб"},{text:"❓ Савол бериш"}]
+    ]
+}
+
+const send = { 
+    resize_keyboard: true,
+    keyboard: [
+        [{text: "💬 Матнли ҳабар"},{text:"🖼 Расмли ҳабар"}]
     ]
 }
 
@@ -83,5 +91,6 @@ module.exports = {
     cancel,
     inline,
     home,
-    date
+    date,
+    send
 }

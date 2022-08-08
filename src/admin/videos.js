@@ -19,14 +19,13 @@ const juma = async(bot, msg) => {
         }
         
         if(playList == '' || playList == undefined) return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
-        
-        await yutubeApi(playList)
+        let kl = await yutubeApi(playList, bot)
         await playlist('5',playList)
 
         steep.pop()
         await update(chatId, steep)
 
-        bot.sendMessage(chatId, "✅ Бажарилди",{
+        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
             reply_markup:videocategory
         })
     }catch(err){
@@ -54,13 +53,13 @@ const maruza = async(bot, msg) => {
         
         if(playList == '' || playList == undefined) return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
         
-        await yutubeApi(playList)
+        let kl = await yutubeApi(playList, bot)
         await playlist('6',playList)
 
         steep.pop()
         await update(chatId, steep)
-
-        bot.sendMessage(chatId, "✅ Бажарилди",{
+        console.log(kl);
+        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
             reply_markup:videocategory
         })
     }catch(err){
@@ -88,13 +87,13 @@ const ilmiy = async(bot, msg) => {
         
         if(playList == '' || playList == undefined) return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
         
-        await yutubeApi(playList)
+        let kl = await yutubeApi(playList, bot)
         await playlist('7',playList)
 
         steep.pop()
         await update(chatId, steep)
 
-        bot.sendMessage(chatId, "✅ Бажарилди",{
+        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
             reply_markup:videocategory
         })
     }catch(err){
@@ -121,13 +120,13 @@ const savol = async(bot, msg) => {
         
         if(playList == '' || playList == undefined) return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
         
-        await yutubeApi(playList)
+        let kl = await yutubeApi(playList, bot)
         await playlist('8',playList)
 
         steep.pop()
         await update(chatId, steep)
 
-        bot.sendMessage(chatId, "✅ Бажарилди",{
+        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
             reply_markup:videocategory
         })
     }catch(err){

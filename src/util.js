@@ -1,4 +1,5 @@
 const {data,api} = require('./middleweares/model.js')
+const  axios = require('axios')
 
 const insert = async(userId, array) => {
     let steep = array.join(' ')
@@ -120,19 +121,73 @@ const playlist = async(category,playlist) => {
     `,category,playlist)
 }
 
-const yutubeApi = async(playlist) => {
-    let videos = await api(playlist)
-    await data(`
-        delete from videos
-        where play_list = $1
-    `,playlist)
-    videos.videos.map(async(el) => {
-        await data(`
-            insert into videos(video_id, title, imgUrl,play_list,time_length) values ($1, $2, $3, $4, $5)
-        `,el.id, el.title, el.thumbnail_url,videos.id, el.length)
-    })
-    return videos
+const  vid = async(id) => {
+    let video = await data(`
+        select 
+            *
+        from audios
+    `)
+    // return video
+    console.log(video) 
 }
+
+// vid()
+
+const yutubeApi = async(playlist, bot) => {
+    let count = 0
+    let videos = await api(playlist)
+    let video = await data(`
+        select 
+            * 
+        from videos 
+        where play_list = $1
+    `, playlist)
+    let arr = await videos.videos.map(async(el, index) => {
+        let dat  = video.find(dat_el => dat_el.video_id == el.id)
+        if(!dat) {
+            let down = await download(el.id, bot)
+            // console.log(down);
+            await data(`
+                insert into videos(video_id, title, imgUrl,play_list,time_length, video_tg_id, video_size) values ($1, $2, $3, $4, $5, $6, $7)
+            `,el.id, el.title, el.thumbnail_url,videos.id, el.length, down?.video?.file_id ? down?.video?.file_id : false, down?.video?.file_size ? down?.video?.file_size : 0)
+            count++
+            return 
+        } else if(dat) {
+            if(dat.video_tg_id == 'false'){
+                let down = await download(el.id, bot)
+                await data(`
+                    update videos set video_tg_id = $2, video_size = $3 where video_id = $1
+                `, dat.video_id, down?.video?.file_id ? down?.video?.file_id : false, down?.video?.file_size ? down?.video?.file_size : 0 )
+            }
+            return 
+        }
+        return true
+    })
+}
+
+
+
+
+const download = async(dat, bot) => {
+    if(!dat) return
+    try{
+        let options = {
+            method: 'GET',
+            url: 'https://youtube-search-and-download.p.rapidapi.com/video',
+            params: {id: `${dat}`},
+            headers: {
+                'x-rapidapi-host': 'youtube-search-and-download.p.rapidapi.com',
+                'x-rapidapi-key': 'da6e2199f0mshc58303b344eec4ap138ef0jsna1fe1b5ecdc2'
+            }
+        };
+        let res = await axios.request(options)
+        let err = await bot.sendVideo('887528138', (res.data.streamingData.formats[1].url));
+        return err
+    }catch(err){
+        console.log(err);
+        return false 
+    }
+} 
 
 module.exports = {
     deletePlaylist,

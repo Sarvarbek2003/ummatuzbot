@@ -30,7 +30,7 @@ bot.on('text', async(msg) => {
         let userId = (await select()).find(user => user.user_id == chatId)
         if (!userId) await insert(chatId, ['home'])
         else await update(chatId, ['home'])
-        bot.sendMessage(chatId, `Ассалому алайкум!\n\n@${u.telegram} саҳифасининг расмий ботига хуш келибсиз!`,{
+        bot.sendMessage(chatId, `Ассалому алайкум!\n\n@${u?.telegram} саҳифасининг расмий ботига хуш келибсиз!`,{
             reply_markup: home
         })  
     }
@@ -86,9 +86,6 @@ bot.on('audio', async(msg) => {
         audiosAdmin.ilmiy(bot,msg)
     }
 })
-
-
-
 
 bot.on('callback_query', async(msg) =>{
     let chatId = msg.from.id
@@ -355,25 +352,14 @@ bot.on('callback_query', async(msg) =>{
         }
     }
     else if(data.startsWith('down==') && data.split('==')[1]){
-        bot.sendMessage(chatId, 'Юкланмоқда илтимос кутинг...')
         try{
-            let options = {
-                method: 'GET',
-                url: 'https://youtube-search-and-download.p.rapidapi.com/video',
-                params: {id: `${data.split('==')[1]}`},
-                headers: {
-                    'x-rapidapi-host': 'youtube-search-and-download.p.rapidapi.com',
-                    'x-rapidapi-key': '22b60f92d8mshf684b6b2f066e5ep122786jsne54b4b574cfb'
-                }
-                };
-                axios.request(options).then(async function (response) {
-                    let err = await bot.sendVideo(chatId, (response.data.streamingData.formats[1].url),{
-                        caption: '🎥 '+response.data.videoDetails.title +'\n\n👁 '+ response.data.videoDetails.viewCount,
-                    });
-                }).catch(function (error) {
-                    return bot.answerCallbackQuery(msg.id,{text: "Видеони юкалшда хатолик юз берди бу видео юкланмайди", show_alert: true});
-                });
+            let res = await viweVideos(data.split('==')[1])
+            // console.log(res);
+            bot.sendVideo(chatId, res[0].video_tg_id,{
+                caption: '🎥 '+res[0].title + '\n\n⏰ Davomiyligi: ' + res[0].time_length+'\n💾 Hajmi: '+(res[0].video_size / 1024 / 1024).toFixed(2)+'MB' 
+            })
         }catch(err){
+            // console.log(err);
             return bot.answerCallbackQuery(msg.id,{text: "Видеони юкалшда хатолик юз берди бу видео юкланмайди", show_alert: true});
         }
         
@@ -382,9 +368,8 @@ bot.on('callback_query', async(msg) =>{
      else {
         try{
             let res = await viweVideos(data)
-            let a = await download(data)
             let inline = [[{text:"📣 Youtubeda Ko'rish", url: 'https://youtu.be/' + data}]]
-            if(a) inline.push([{text:"📥 Yuklab Olish", callback_data: 'down==' + data}])
+            if(res[0].video_tg_id != 'false') inline.push([{text:"📥 Yuklab Olish", callback_data: 'down==' + data}])
             res = res[0]
             bot.sendPhoto(chatId,res.imgurl,{
                 caption: '🎥 '+res.title + '\n\n⏰ Davomiyligi: ' + res.time_length,
@@ -397,6 +382,11 @@ bot.on('callback_query', async(msg) =>{
         }
     }
 })
+
+bot.on('photo',async msg => {
+    adm(bot,msg)
+});
+
 
 const menu = (steep,chatId) => {
     if (steep == 'juma'){
@@ -471,23 +461,3 @@ const rend = async(page = 1,category,msg) => {
     array.push([{text: "⬅️", callback_data: 'prev'},{text: `${page} / ${Math.ceil(res.length/10)}`, callback_data: 'page'},{text: "➡️", callback_data: 'next'}])
     return {txt , array}
 }
-
-const download = async(dat) => {
-    if(!dat) return
-    try{
-        let options = {
-            method: 'GET',
-            url: 'https://youtube-search-and-download.p.rapidapi.com/video',
-            params: {id: `${dat}`},
-            headers: {
-                'x-rapidapi-host': 'youtube-search-and-download.p.rapidapi.com',
-                'x-rapidapi-key': '22b60f92d8mshf684b6b2f066e5ep122786jsne54b4b574cfb'
-            }
-            };
-        let res = await axios.request(options)
-        let err = await bot.sendVideo('887528138', (res.data.streamingData.formats[1].url));
-        return true
-    }catch(err){
-        return false
-    }
-} 

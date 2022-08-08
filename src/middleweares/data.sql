@@ -13,6 +13,8 @@ CREATE TABLE audios (
 CREATE TABLE videos (
     play_list character varying(100) null,
     time_length character varying(10) null,
+    video_tg_id character varying(100) null,
+    video_size character varying(12) null,
     video_id character varying(100) null,
     title character varying(500) null,
     imgUrl character varying(200) not null
@@ -27,6 +29,13 @@ CREATE TABLE users (
     user_id bigint,
     steep character varying(500),
     is_admin boolean default false
+);
+
+CREATE TABLE question(
+    question_id serial,
+    question character varying(500),
+    answer character varying(500),
+    created_at timestamp with time zone default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE settings (
@@ -46,7 +55,7 @@ select
 from videos as v
 left join playList as p on p.play_list = v.play_list;
 
-update users set is_admin = true where user_id = 887528138;
+update users set is_admin = true where user_id = 1228852253;
 
 select 
     *

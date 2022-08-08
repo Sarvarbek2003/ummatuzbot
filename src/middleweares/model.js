@@ -32,8 +32,3 @@ module.exports = {
     api
 }
 
-// host: 'john.db.elephantsql.com',
-// port:5432,
-// user: 'tgyuzuha',
-// password: '4flJWBE8RhabT51dWxq3BqUmjD4Hj-SK',
-// database: 'tgyuzuha'
