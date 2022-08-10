@@ -237,14 +237,14 @@ const foydali = async(bot, msg) => {
         }
         if(playList == '' || playList == undefined) return bot.sendMessage(chatId, "Нотўгри линк юбордингиз\nлинкни текшириб қайта юборинг")
 
-        await yutubeApi(playList)
+        let kl = await yutubeApi(playList, bot)
         await playlist('4',playList)
 
         steep.pop()
         await update(chatId, steep)
         
-        bot.sendMessage(chatId, "✅ Бажарилди",{
-            reply_markup:category
+        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
+            reply_markup:videocategory
         })
     }catch (err){
         bot.sendMessage(chatId,'Хатолик қайта уруниб кўринг')
