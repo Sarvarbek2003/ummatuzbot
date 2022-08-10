@@ -51,7 +51,7 @@ const send = async(bot,msg) => {
             let { link, info, date, size} = audio(audios, 1, msg.text)
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n🎙 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n👉 @${u?.telegram}`
+                caption: `📆 ${date}-yil\n🎙 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n\n👉 @${u?.telegram}`
             })
             return
         }
@@ -70,7 +70,7 @@ const send = async(bot,msg) => {
             let { link, info, date, size } = audio(audios, 2, msg.text)
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption:`📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${info}\n👉 @${u?.telegram}`
+                caption:`📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${info}\n\n👉 @${u?.telegram}`
             })
             return
         }
@@ -88,7 +88,7 @@ const send = async(bot,msg) => {
         let { link, info, date, size } = audio(audios, 3, msg.text) 
             if(!link || !info || !date || !size) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n📖 Илмий суҳбатлар\n💽 ${size}MB\n\n${info}\n👉 @${u.telegram}`
+                caption: `📆 ${date}-yil\n📖 Илмий суҳбатлар\n💽 ${size}MB\n\n${info}\n\n👉 @${u.telegram}`
             })
     }
 }

@@ -25,7 +25,7 @@ const juma = async(bot, msg) => {
         steep.pop()
         await update(chatId, steep)
 
-        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
+        bot.sendMessage(chatId, "✅ Бажарилди",{
             reply_markup:videocategory
         })
     }catch(err){
@@ -58,8 +58,7 @@ const maruza = async(bot, msg) => {
 
         steep.pop()
         await update(chatId, steep)
-        console.log(kl);
-        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
+        bot.sendMessage(chatId, "✅ Бажарилди",{
             reply_markup:videocategory
         })
     }catch(err){
@@ -93,7 +92,7 @@ const ilmiy = async(bot, msg) => {
         steep.pop()
         await update(chatId, steep)
 
-        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
+        bot.sendMessage(chatId, "✅ Бажарилди",{
             reply_markup:videocategory
         })
     }catch(err){
@@ -126,7 +125,7 @@ const savol = async(bot, msg) => {
         steep.pop()
         await update(chatId, steep)
 
-        if(kl) bot.sendMessage(chatId, "✅ Бажарилди",{
+        bot.sendMessage(chatId, "✅ Бажарилди",{
             reply_markup:videocategory
         })
     }catch(err){

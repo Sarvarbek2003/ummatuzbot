@@ -65,6 +65,9 @@ bot.on('text', async(msg) => {
         else if(text == '🎥 Видео маърузалар' || steep[1] == 'videomenu'){
             videosMenu.send(bot, msg)
         }
+        else if(text == '❓ Савол бериш'){
+            bot.sendMessage(chatId, 'Ассаломуалекум саволингизни ушбу ботда ёзиб қолдиринг\n\n@ummatuzsavolbot')
+        }
     }
 });
 

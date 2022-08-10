@@ -177,7 +177,7 @@ const download = async(dat, bot) => {
             params: {id: `${dat}`},
             headers: {
                 'x-rapidapi-host': 'youtube-search-and-download.p.rapidapi.com',
-                'x-rapidapi-key': 'da6e2199f0mshc58303b344eec4ap138ef0jsna1fe1b5ecdc2'
+                'x-rapidapi-key': '22b60f92d8mshf684b6b2f066e5ep122786jsne54b4b574cfb'
             }
         };
         let res = await axios.request(options)
