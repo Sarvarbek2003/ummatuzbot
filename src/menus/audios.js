@@ -37,12 +37,8 @@ const send = async(bot,msg) => {
         }
         else if(text == '💫 Рамазон сухбатлари'){
             if (steep[steep.length - 1] != 'ramazon') steep.push('ramazon'), await update(chatId, steep)
-            let {txt,array} = await rend(1,4, msg)
-            bot.sendMessage(chatId, txt,{
-                parse_mode: 'HTML',
-                reply_markup: {
-                    inline_keyboard: array
-                }
+            bot.sendMessage(chatId, 'Маърузалар тўплами, йилни танланг 👇',{
+                reply_markup: date
             })
         }
     }
@@ -51,7 +47,7 @@ const send = async(bot,msg) => {
             let { link, info, date, size, title} = audio(audios, 1, msg.text)
             if(!link || !info || !date || !size || !title) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n🎙 Жума маърузалар\n💽 ${size}MB\n\n${title}\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`
+                caption: `📆 ${date}-yil\n🎙 Жума маърузалар\n💽 ${size}MB\n\n${title}\n\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`
             })
             return
         }
@@ -70,7 +66,7 @@ const send = async(bot,msg) => {
             let { link, info, date, size, title } = audio(audios, 2, msg.text)
             if(!link || !info || !date || !size || !title) return
             bot.sendAudio(chatId, link,{
-                caption:`📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${title}\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`
+                caption:`📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${title}\n\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`
             })
             return
         }
@@ -88,24 +84,27 @@ const send = async(bot,msg) => {
         let { link, info, date, size, title } = audio(audios, 3, msg.text) 
             if(!link || !info || !date || !size || !title) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n📖 Илмий суҳбатлар\n💽 ${size}MB\n\n${title}\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`
+                caption: `📆 ${date}-yil\n📖 Илмий суҳбатлар\n💽 ${size}MB\n\n${title}\n\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`
             })
     }
     else if(steep[steep.length - 1] == 'ramazon'){
-        let { link, info, date, size, title } = audio(audios, 4, msg.text) 
+        if(steep[steep.length - 1] == 'ramazondate'){
+            let { link, info, date, size, title } = audio(audios, 4, msg.text)
             if(!link || !info || !date || !size || !title) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n💫 Рамазон сухбатлари\n💽 ${size}MB\n\n${title}\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`
+                caption:`📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${title}\n\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`
             })
-
-            if(!['2016','2017','2018','2019','2020','2021','2022'].includes(`${msg.text}`) || steep[steep.length - 1] == 'ramazondate') return
-            steep.push('ramazondate'), await update(chatId, steep)
-            bot.sendMessage(chatId, `${msg.text}-йилги маърузалар тўплами`,{
-                reply_markup:{
-                    resize_keyboard: true,
-                    keyboard: render(audios, 2, msg.text) || [{text: '🔙 Ортга'}]
-                }
-            })
+            return
+        }
+        
+        if(!['2016','2017','2018','2019','2020','2021','2022'].includes(`${msg.text}`) || steep[steep.length - 1] == 'ramazondate') return
+        steep.push('ramazondate'), await update(chatId, steep)
+        bot.sendMessage(chatId, `${msg.text}-йилги маърузалар тўплами`,{
+            reply_markup:{
+                resize_keyboard: true,
+                keyboard: render(audios, 2, msg.text) || [{text: '🔙 Ортга'}]
+            }
+        })
     }
 }
 

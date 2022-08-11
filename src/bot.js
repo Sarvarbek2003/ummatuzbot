@@ -406,6 +406,11 @@ const menu = (steep,chatId) => {
             reply_markup:date
         })
     }
+    else if (steep == 'ramazon'){
+        bot.sendMessage(chatId, 'Марузалар топлами, йилни танланг 👇',{
+            reply_markup:date
+        })
+    }
     else if (steep == 'audiomenu'){
         bot.sendMessage(chatId, 'Аудио марузалар',{
             reply_markup:category

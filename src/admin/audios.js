@@ -60,10 +60,10 @@ const juma = async(bot, msg, year) => {
         await update(chatId, steep)
     }
     else if(aud.includes(text)){
-        let { link, info, date, size} = audio(audios, 1, msg.text)
-            if(!link || !info || !date || !size) return
+        let { link, info, date, size, title} = audio(audios, 1, msg.text)
+            if(!link || !info || !date || !size || !title) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n🕋 Жума маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n\n👉 @${u?.telegram}`,
+                caption: `📆 ${date}-yil\n🕋 Жума маърузалар\n💽 ${size}MB\n\n${title}\n\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`,
                 reply_markup : inline
             })
     }
@@ -130,10 +130,10 @@ const maruza = async(bot, msg, year) => {
         await update(chatId, steep)
     }
     else if(aud.includes(text)){
-        let { link, info, date, size} = audio(audios, 2, msg.text)
-            if(!link || !info || !date || !size) return
+        let { link, info, date, size, title} = audio(audios, 2, msg.text)
+            if(!link || !info || !date || !size || !title) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 Hajmi: ${size}MB\n\n${info}\n\n👉 @${u?.telegram}`,
+                caption: `📆 ${date}-yil\n🎙 Қисқа маърузалар\n💽 ${size}MB\n\n${title}\n\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`,
                 reply_markup : inline
             })
     }
@@ -200,10 +200,10 @@ const ilmiy = async(bot, msg, year = '2022') => {
         await update(chatId, steep)
     }
     else if(aud.includes(text)){
-        let { link, info, date, size} = audio(audios, 3, msg.text)
-            if(!link || !info || !date || !size) return
+        let { link, info, date, size, title} = audio(audios, 3, msg.text)
+            if(!link || !info || !date || !size || !title) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n📖 Илмий суҳбат\n💽 Hajmi: ${size}MB\n\n${info}\n\n👉 @${u?.telegram}`,
+                caption: `📆 ${date}-yil\n📖 Илмий суҳбат\n💽 ${size}MB\n\n${title}\n\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`,
                 reply_markup : inline
             })
     }
@@ -270,10 +270,10 @@ const ramazon = async(bot, msg, year) => {
         await update(chatId, steep)
     }
     else if(aud.includes(text)){
-        let { link, info, date, size} = audio(audios, 4, msg.text)
-            if(!link || !info || !date || !size) return
+        let { link, info, date, size, title} = audio(audios, 4, msg.text)
+            if(!link || !info || !date || !size || !title) return
             bot.sendAudio(chatId, link,{
-                caption: `📆 ${date}-yil\n📖 Илмий суҳбат\n💽 Hajmi: ${size}MB\n\n${info}\n\n👉 @${u?.telegram}`,
+                caption: `📆 ${date}-yil\n📖 Илмий суҳбат\n💽 ${size}MB\n\n${title}\n\nУшбу суҳбатни Youtube орқали кўринг\n👇\n${info}\n\n👉 @${u?.telegram}`,
                 reply_markup : inline
             })
     }
@@ -389,7 +389,7 @@ const render = (arr, cat, date) => {
 
 const audio = (arr, cat, title)  => {
     let obj = arr.find(el => el.category == cat && el.title == title)
-    return obj || {link: undefined, info: undefined, date: undefined}
+    return obj || {link: undefined, info: undefined, date: undefined, title: undefined}
 }
 
 module.exports = {
