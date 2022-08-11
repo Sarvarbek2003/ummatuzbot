@@ -88,6 +88,10 @@ bot.on('audio', async(msg) => {
     else if(steep[steep.length - 1] == 'sendIlmiy' && admin){
         audiosAdmin.ilmiy(bot,msg)
     }
+    else if(steep[steep.length - 1] == 'sendRamazon' && admin){
+        audiosAdmin.ramazon(bot,msg)
+    }
+   
 })
 
 bot.on('callback_query', async(msg) =>{

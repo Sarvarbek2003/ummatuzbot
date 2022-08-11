@@ -2,7 +2,7 @@ CREATE DATABASE ummatuz;
 
 CREATE TABLE audios (
     audio_id character varying(100) null,
-    title character varying(50) not null,
+    title character varying(100) not null,
     info character varying(500) not null,
     link character varying(100) not null, 
     date character varying(4) not null, 
@@ -26,9 +26,9 @@ CREATE TABLE playList (
 );
 
 CREATE TABLE users (
-    user_id bigint,
+    user_id bigint primary key,
     steep character varying(500),
-    is_admin boolean default false
+    is_admin boolean default false,
 );
 
 CREATE TABLE question(
@@ -64,6 +64,8 @@ where category = '4';
 
 delete playlist 
 where 
+
+ select * from users where parner_user = '887528138'
 
 -- 280034232
 insert into settings (telegram) values ('ummatuz')

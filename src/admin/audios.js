@@ -47,7 +47,7 @@ const juma = async(bot, msg, year) => {
         title = '📖' + text
     }
     else if(st == 'sendInfo'){
-        info = '🔖' + text
+        info = text
         await insertAudio(uid,year, link, size, title, info,1)
         bot.sendMessage(chatId,'✅Мувоффақятли жойланди\n\n🔄Ушбу йил учун яна аудио жойламоқчи бўлсангиз аудио юборинг!',{
             reply_markup:{
@@ -117,7 +117,7 @@ const maruza = async(bot, msg, year) => {
         title = '📖' + text
     }
     else if(st == 'sendInfo'){
-        info = '🔖' + text
+        info = text
         await insertAudio(uid,year, link, size, title, info,2)
         bot.sendMessage(chatId,'✅Мувоффақятли жойланди\n\n🔄Ушбу йил учун яна аудио жойламоқчи бўлсангиз аудио юборинг!',{
             reply_markup:{
@@ -217,6 +217,76 @@ const ilmiy = async(bot, msg, year = '2022') => {
     }
 }
 
+const ramazon = async(bot, msg, year) => {
+    const chatId = msg.chat.id;
+    const text = msg.text
+
+    let u = await selectSet()
+
+    let audios = await selectAudios()
+    let aud = ren(audios,4, year)
+
+    let steep = (await select()).find(user => user.user_id == chatId)?.steep.split(' ')
+    let st = steep[steep.length - 1]
+
+    if(text == '🔙 Ортга' && steep[1] == 'admin'){
+        steep.splice(steep.length-1, 1)
+        await menu(bot,steep,chatId)
+        await update(chatId, steep)
+    } 
+    else if (st == 'sendRamazon' && msg.audio){
+        bot.sendMessage(chatId, "Мавзуни ёзинг",{
+            reply_markup:{
+                resize_keyboard: true,
+                keyboard: render(audios, 4, msg.text) || [{text: '🔙 Ортга'}]
+            }
+        })
+        if (steep[steep.length - 1] != 'sendTitle') steep.push('sendTitle'), await update(chatId, steep)
+        uid = msg.audio.file_unique_id
+        link = msg.audio.file_id
+        size = (msg.audio.file_size / 1024 / 1024).toFixed(2)
+    }
+    else if(st == 'sendTitle'){
+        if (steep[steep.length - 1] != 'sendInfo') steep.push('sendInfo'), await update(chatId, steep)
+        bot.sendMessage(chatId,'Қисқача изоҳ',{
+            reply_markup:{
+                resize_keyboard: true,
+                keyboard: render(audios, 4, msg.text) || [{text: '🔙 Ортга'}]
+            }
+        })
+        title = '📖' + text
+    }
+    else if(st == 'sendInfo'){
+        info = text
+        await insertAudio(uid,year, link, size, title, info,4)
+        bot.sendMessage(chatId,'✅Мувоффақятли жойланди\n\n🔄Ушбу йил учун яна аудио жойламоқчи бўлсангиз аудио юборинг!',{
+            reply_markup:{
+                resize_keyboard: true,
+                keyboard: render(audios, 4, msg.text) || [{text: '🔙 Ортга'}]
+            }
+        })
+        let index = steep.indexOf(st) 
+        steep.splice(index - 1)
+        await update(chatId, steep)
+    }
+    else if(aud.includes(text)){
+        let { link, info, date, size} = audio(audios, 4, msg.text)
+            if(!link || !info || !date || !size) return
+            bot.sendAudio(chatId, link,{
+                caption: `📆 ${date}-yil\n📖 Илмий суҳбат\n💽 Hajmi: ${size}MB\n\n${info}\n\n👉 @${u?.telegram}`,
+                reply_markup : inline
+            })
+    }
+    else {
+        bot.sendMessage(chatId,"Марҳамат аудио юборинг",{
+            reply_markup:{
+                resize_keyboard: true,
+                keyboard: render(audios, 4, msg.text) || [{text: '🔙 Ортга'}]
+            }
+        })
+    }
+}
+
 const foydali = async(bot, msg) => {
     const chatId = msg.chat.id;
     try {
@@ -262,6 +332,11 @@ const menu = (bot,steep,chatId) => {
             reply_markup:cancel
         })
     }
+    else if(steep[steep.length - 1] == 'ramazon'){
+        bot.sendMessage(chatId,'Рамазон сухбатлари',{
+            reply_markup:date
+        })
+    }
     else if(steep[steep.length - 1] == 'adminJuma'){
         bot.sendMessage(chatId,'Жума маърузалар йилни танланг',{
             reply_markup:date
@@ -273,7 +348,7 @@ const menu = (bot,steep,chatId) => {
         })
     }
     else if(steep[steep.length - 1] == 'adminAudio'){
-        bot.sendMessage(chatId,'Audo',{
+        bot.sendMessage(chatId,'Audio',{
             reply_markup:category
         })
     }
@@ -319,6 +394,7 @@ const audio = (arr, cat, title)  => {
 
 module.exports = {
     foydali,
+    ramazon,
     maruza,
     ilmiy,
     juma

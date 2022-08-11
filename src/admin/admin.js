@@ -67,13 +67,13 @@ module.exports = async(bot, msg) => {
                 reply_markup: category
             })
     }
-    else if((st == 'adminJuma' || st == 'adminMaruza' || st == 'sendFoydali' || st == 'adminFoydali') && text == '🔙 Ортга'){
+    else if((st == 'adminJuma' || st == 'adminMaruza' || st == 'sendFoydali' || st == 'ramazon') && text == '🔙 Ортга'){
         steep.splice(steep.length-1, 1)
         await menu(bot,steep,chatId)
         await update(chatId, steep)
     }
     else if(st == 'adminAudio'){
-        if((st == 'adminJuma' || st == 'adminMaruza' || 'adminAudio') && text == '🔙 Ортга'){
+        if((st == 'adminJuma' || st == 'adminMaruza' ||  st == 'adminAudio' || st == 'ramazon') && text == '🔙 Ортга'){
             steep.splice(steep.length-1, 1)
             await menu(bot,steep,chatId)
             await update(chatId, steep)
@@ -106,6 +106,13 @@ module.exports = async(bot, msg) => {
                 reply_markup: updateMenu
             })
         }
+        else if(text == '💫 Рамазон сухбатлари'){
+            if (steep[steep.length - 1] != 'ramazon') steep.push('ramazon'), await update(chatId, steep)
+            bot.sendMessage(chatId, 'Рамазон сухбатлари',{
+                resize_keyboard:true,
+                reply_markup: date
+            })
+        }
     }
     else if(st == 'adminJuma' || steep[4] == 'sendAudio'){
         if (!steep.includes('sendAudio')) steep.push('sendAudio'), await update(chatId, steep), year = msg.text
@@ -118,6 +125,11 @@ module.exports = async(bot, msg) => {
     else if(st == 'sendIlmiy' || steep[4] == 'sendTitle'){
         if (!steep.includes('sendIlmiy')) steep.push('sendIlmiy'), await update(chatId, steep)
         audiosAdmin.ilmiy(bot,msg)
+    }
+    else if(st == 'ramazon' || steep[4] == 'sendRamazon'){
+        
+        if (!steep.includes('sendRamazon')) steep.push('sendRamazon'), await update(chatId, steep), year = msg.text
+        audiosAdmin.ramazon(bot,msg,year)
     }
     else if(st == 'adminFoydali' || steep[4] == 'sendFoydali'){
         if(
@@ -313,6 +325,7 @@ const menu = (bot,steep,chatId) => {
             reply_markup:videocategory
         })
     }
+
 }
 
 const  render = (arr, cat) => {
